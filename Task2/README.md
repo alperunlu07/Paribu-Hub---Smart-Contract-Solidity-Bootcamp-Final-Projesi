@@ -46,7 +46,4 @@ This project is licensed under the MIT License.
 
 Special thanks to the Solidity community and the Ethereum ecosystem for their valuable resources and documentation.
 
-## Contact
-
-For any questions or inquiries, please feel free to contact [Your Name] via email at [alperunlu07@gmail.com].
 
