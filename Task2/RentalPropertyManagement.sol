@@ -51,7 +51,7 @@ contract RentalPropertyManagement {
 
     constructor() { 
     }
-
+    // check address record is exist at homeOwner list
     function isHomeOwner(address _addres) public view returns (bool) {
         for (uint i = 0; i < homeOwners.length; i++) {
             if (homeOwners[i].addres == _addres) {
@@ -60,7 +60,7 @@ contract RentalPropertyManagement {
         }
         return false;
     }
-
+    // check address record is exist at tanent list
     function isTenants(address _addres) public view returns (bool) {
         for (uint i = 0; i < tenants.length; i++) {
             if (tenants[i].addres == _addres) {
@@ -69,21 +69,21 @@ contract RentalPropertyManagement {
         }
         return false;
     }
-
+    // for audit only owners
     modifier onlyOwner() {
         require(isHomeOwner(msg.sender), "Only the owner can call this function.");
         _;
     }
-    
+    // for audit only tenant
     modifier onlyTenant() {
         require(isTenants(msg.sender), "Only the tenant can call this function.");
         _;
     }
-    
+    // Add new home owner to list
     function addHomeOwner(Person memory _person) public { 
         homeOwners.push(_person);
     }
-    
+    // Add new tenant person 
     function addTenant(Person memory _person) public { 
         tenants.push(_person);
     }
@@ -99,22 +99,23 @@ contract RentalPropertyManagement {
     function getPropertiesByOwner() public view returns (Property[] memory) {
         return ownerProperties[msg.sender];
     }
-
+    //for check is recorded saved succesfully 
     function getAllHomeOwners() public view returns (Person[] memory) {
         return homeOwners;
     }
-
+    // Start Rent property function
     function startRentProperty(RentContract memory _rentContract) public onlyOwner 
     {
         _rentContract.id = rentContractsCount;
         rentContractsCount++;
         rentContracts[msg.sender].push(_rentContract);
     }
-
+    // Get all property contract with owner address 
     function getRentProperty() public view onlyOwner returns(RentContract[] memory)
     {
         return rentContracts[msg.sender];
     }
+    //Terminate rent proprty 
     function stopRentProperty(uint _contractId) public onlyOwner {
         RentContract[] storage ownerRentContracts = rentContracts[msg.sender];
         for (uint i = 0; i < ownerRentContracts.length; i++) {
@@ -126,19 +127,18 @@ contract RentalPropertyManagement {
             }
         }
     }  
-
+    // Tenant send report related with property
     function sendPropertyReport(Report memory _report) public onlyTenant 
     {
         _report.id = reportsCount;
         reportsCount++;
         reports[_report.propertyId].push(_report);
     }
-
+    // Get proprty Report with porpoerty Id
     function getPropertyReport(uint PropertyId) public view onlyTenant returns(Report[] memory)
     {
         return reports[PropertyId];
-    }
-
+    } 
 }
 
 //["alper",0x5B38Da6a701c568545dCfcB03FcB875f56beddC4]
