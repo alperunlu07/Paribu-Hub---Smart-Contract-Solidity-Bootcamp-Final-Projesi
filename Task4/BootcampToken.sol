@@ -8,7 +8,7 @@ contract BootcampToken {
     string public name = "Bootcamp Token";
     string public symbol = "BCT";
     uint256 public decimals = 0;
-
+    bool locked;
     // The fixed amount of tokens, stored in an unsigned integer type variable.
     uint256 public totalSupply = 1000000;
 
@@ -31,14 +31,20 @@ contract BootcampToken {
         balances[msg.sender] = totalSupply;
         owner = msg.sender;
     }
-
+    // A modifier that prevents reentrancy
+    modifier noReentrancy() {
+        require(!locked, "Reentrant call");
+        locked = true;
+        _;
+        locked = false;
+    }
     /**
      * A function to transfer tokens.
      * This function is secure enough against "Re-Entry Attacks".
      * The `external` modifier makes a function *only* callable from *outside*
      * the contract.
      */
-    function transfer(address to, uint256 amount) external {
+    function transfer(address to, uint256 amount) external noReentrancy {
         // Check if the transaction sender has enough tokens.
         // If `require`'s first argument evaluates to `false` then the
         // transaction will revert.
