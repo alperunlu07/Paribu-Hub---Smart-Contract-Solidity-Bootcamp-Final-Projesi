@@ -14,17 +14,18 @@ The BootcampToken (BCT) is a simple ERC-20 token smart contract on the Ethereum 
 - **Transfer Function**: Allows token transfers from one address to another.
 - **BalanceOf Function**: Allows querying the token balance of a specific address.
 
-## No Reentrancy Guard
+## Reentrancy Guard
 
-This contract does not have a problem with "Reentrancy Guard" due to the following reasons:
+To enhance the security of the BootcampToken (BCT) contract, a "Reentrancy Guard" has been added. The "Reentrancy Guard" is implemented as a modifier, `noReentrancy`, and ensures that the contract is not reentrant, protecting against reentrancy attacks.
 
-1. **No External Contract Calls**: The contract does not make any external contract calls. It only interacts with the internal state variables and does not make calls to external contracts. Reentrancy attacks typically occur when a contract interacts with other smart contracts that can potentially exploit reentrancy vulnerabilities.
+The "Reentrancy Guard" works as follows:
 
-2. **No Ether Transfers**: The contract does not accept or transfer Ether. Reentrancy attacks often involve Ether transfers. This contract solely deals with the transfer of tokens within its own system.
+- When a function with the `noReentrancy` modifier is called, it checks whether the contract is locked (`locked` state variable).
+- If the contract is not locked, it sets the `locked` state to `true`, preventing any external call from invoking the same function.
+- The function then executes its logic, making state changes and performing operations.
+- After the function completes, it resets the `locked` state to `false`, allowing subsequent calls.
 
-3. **Simple Functionality**: The contract's functionality is straightforward. It allows token transfers and balance inquiries, without complex interactions. The simplicity of the contract's logic reduces the risk of reentrancy attacks.
-
-While this contract does not require a specific reentrancy guard due to its simple and self-contained nature, it's important to note that reentrancy attacks should be carefully considered when designing contracts that involve complex interactions with external contracts or Ether transfers.
+This pattern helps prevent reentrancy attacks, where an external contract or address can maliciously reenter the function before it completes, potentially causing unauthorized access and loss of funds.
 
 ## Getting Started
 
@@ -37,4 +38,3 @@ This contract is released under the MIT License. You can find the license detail
 ## Acknowledgments
 
 This contract serves as an educational example and template for creating ERC-20 tokens on the Ethereum blockchain. It should be used as a starting point and may need additional features, testing, and security considerations for a production-ready token.
-
